@@ -61,37 +61,23 @@ export default class FingerPrintWeb extends Component {
 
         }
         this.ShowDeviceInfo = this.ShowDeviceInfo.bind(this);
-        this.CaptureLeftHand = this.CaptureLeftHand.bind(this);
-        this.CaptureRightHand = this.CaptureRightHand.bind(this);
-        this.CaptureThumbsHand = this.CaptureThumbsHand.bind(this);
+        // this.CaptureLeftHand = this.CaptureLeftHand.bind(this);
+        // this.CaptureRightHand = this.CaptureRightHand.bind(this);
+        // this.CaptureThumbsHand = this.CaptureThumbsHand.bind(this);
+ 
 
-
-    }
-
-
-    componentWillUnmount() {
-this.handleSubmitted();
     }
 
 
     componentDidMount() {
+
  
-            
-        
-        if ("caches" in window) {
-            caches.delete('MyCache').then(function (res) {
-
-                const script = document.createElement("script");
-
-                if (script) {
-                    script.src = "http://localhost:5020/IBScanUltimate.min.js";
-                    script.async = false;
-                    document.body.appendChild(script);
-                }
+                const script1 = document.createElement("script"); 
+                 
+                script1.src = "http://localhost:5020/IBScanUltimate.min.js";
+                script1.async = false;
+                document.body.appendChild(script1);
  
-            });
-        }
-
 
         axios.post(this.state.UrlCheackServiceRuning, this.state.AFIS_FAFM_Right)
             .then(response => {
@@ -162,11 +148,11 @@ this.handleSubmitted();
             this.InitPage();
         }, 1000);
 
-        setInterval(() => {
+        setTimeout(() => {
 
             IBSU.onPreviewImage = (deviceHandle, imageData, rollingInformation) => {
 
-
+debugger;
                 var imageElement = document.getElementById("idFpImage");
                 imageElement.setAttribute('src', "data:image/png;base64," + imageData.StrImagePngBase64);
 
@@ -185,7 +171,7 @@ this.handleSubmitted();
             }
         }, 2000);
 
-        setInterval(() => {
+        setTimeout(() => {
             this.ClearPlatenCheckTimer();
         }, 500);
 
@@ -557,7 +543,7 @@ this.handleSubmitted();
 
     componentDidUpdate() {
 
-        setInterval(() => {
+        setTimeout(() => {
 
 
             IBSU.onSDKConnection = () => {
@@ -2446,18 +2432,12 @@ this.handleSubmitted();
 
     };
 
-    handleSubmitted = ({ res, fields, form }) => {
-        form.reset() // resets "username" field to "admin"
-      }
-
-
-
 
     render() {
 
         return (
-            <Form onSubmitted={this.handleSubmitted}>
-                <body style={{ direction: 'ltr', backgroundColor: "#eeeded" }}> 
+            <Form>
+                <body style={{ direction: 'ltr', backgroundColor: "#eeeded" }}>
                     <div className="container first-div" >
                         <div className="row">
                             <div className="col-xs-12 col-sm-12 col-md-12 header">
@@ -2474,13 +2454,13 @@ this.handleSubmitted();
                                                 <span id="WichHandSelector" style={{ display: "block", width: "500px", wordWrap: "break-word", color: "green", fontSize: "24px" }}></span>
                                             </div>
                                             <div className="detail" style={{ textAlign: 'right', display: 'inline-grid' }}>
-                                            
+
                                                 <label id="lblIFingerIndex">صاحب البصمة</label>
-                                                <input style={{borderRadius:"12px",fontWeight:'bold'}} type={"text"} value={this.props.AgePerson.value < 18 ? "بصمة ولي الأمر":"بصمة صاحب الجواز الحية"} ></input>
+                                                <input style={{ borderRadius: "12px", fontWeight: 'bold' }} type={"text"} value={this.props.AgePerson.value < 18 ? "بصمة ولي الأمر" : "بصمة صاحب الجواز الحية"} ></input>
                                                 {/* <select id="sFingerOwner">
                                                     <option value="15">بصمة صاحب الجواز الحية</option>
                                                     <option value="16"></option>
-                                                </select> */} 
+                                                </select> */}
                                             </div>
 
 
@@ -2530,7 +2510,7 @@ this.handleSubmitted();
                                             </div>
                                         </div>
                                         <br />
-                                        <h3 style={{ position: "relative", top: "30px" ,margin:'revert' }}>الماسح الضوئي</h3>
+                                        <h3 style={{ position: "relative", top: "30px", margin: 'revert' }}>الماسح الضوئي</h3>
                                         <br />
                                         <div>
                                             <span id="spanScannerImage"></span>
