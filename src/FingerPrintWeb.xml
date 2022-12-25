@@ -143,6 +143,23 @@
                     <attributeType name="Long"/>
                 </attributeTypes>
             </property> 
+
+            <property key="ApplicantHimSelf" type="attribute" required="true">
+                <caption>ApplicantHimSelf</caption>
+                <description>The ApplicantHimSelf that contains the Age value who is Grand or Son</description>
+                <attributeTypes> 
+                    <attributeType name="Boolean"/>
+                </attributeTypes>
+            </property> 
+
+            
+            <property key="IsVerify" type="attribute" required="true">
+                <caption>IsVerify</caption>
+                <description>The IsVerify that contains which page Enter Applicant or Deleviery</description>
+                <attributeTypes> 
+                    <attributeType name="Boolean"/>
+                </attributeTypes>
+            </property> 
         </propertyGroup> 
        
         <propertyGroup caption="Events">
@@ -171,8 +188,7 @@
                 <description>Action to trigger when button Close is clicked</description>
             </property>
 
-        </propertyGroup>
-
+        </propertyGroup> 
         <propertyGroup caption="buttons Handle">
             
             <property key="EnableButtonSave" type="expression" defaultValue="'true'">
