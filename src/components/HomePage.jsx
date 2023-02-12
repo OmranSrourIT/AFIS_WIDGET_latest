@@ -3,6 +3,7 @@ import "../ui/FingerPrintWeb.css";
 import axios from "axios";
 import { Form } from 'react-advanced-form';
 import { FingerPrintScaning } from '../components/FingerPrintScaning';
+import { LoadingSpinner } from '../components/LoadingSpinner.js'
 
 export class HomePage extends Component {
 
@@ -59,7 +60,12 @@ export class HomePage extends Component {
             FingerPrintExistRight: false,
             FingerPrintExistLeft: false,
             UrlCheackServiceRuning: "http://localhost:12345/api/AFISHome/CheackSerivceRuning",
-            NochangeFromhandling  : true
+            NochangeFromhandling: true,
+            BlocedButtonCLose: false,
+            BlockedButtonsave: false,
+            BlockedButtonUpdate: false,
+            BlockedbUttonVerfiy: false,
+            IsLoading: false
 
         }
         this.ShowDeviceInfo = this.ShowDeviceInfo.bind(this);
@@ -75,8 +81,8 @@ export class HomePage extends Component {
     }
 
     componentDidMount() {
-        
- 
+
+
         document.getElementById("FPScanner").style.display = 'block'
         document.getElementById("IV01").style.display = 'none'
 
@@ -387,9 +393,32 @@ export class HomePage extends Component {
                 }
             }
 
-            if (this.props.props.onClickActionSave && this.props.props.onClickActionSave.canExecute) {
 
-                this.props.props.onClickActionSave.execute();
+            document.getElementById("BtnSaveFinger").disabled = true;
+
+            if (this.props.props.onClickActionSave && this.props.props.onClickActionSave.canExecute) {
+                this.setState({
+                    BlockedButtonsave: true, IsLoading: true
+                }, () => {
+                    this.props.props.onClickActionSave.execute();
+
+                    setInterval(() => {
+                        if (this.props.props.data)
+                            this.props.props.data.items.map((items ) => {
+                              if(items[Object.getOwnPropertySymbols(items)[0]].jsonData.attributes.IsMatchpic.value)
+                              {
+                                this.setState({
+                                    BlockedButtonsave: false, IsLoading: false
+                                })
+                              }
+                            })
+                        
+
+                    }, 1)
+
+
+
+                })
             }
         } else {
             alert("يرجى اخذ البصمات اولا");
@@ -426,7 +455,12 @@ export class HomePage extends Component {
 
             if (this.props.props.onClickActionUpdate && this.props.props.onClickActionUpdate.canExecute) {
 
-                this.props.props.onClickActionUpdate.execute();
+                this.setState({
+                    BlockedButtonUpdate: true
+                }, () => {
+                    this.props.props.onClickActionUpdate.execute();
+                })
+
             }
         } else {
             alert("يرجى اخذ البصمات اولا");
@@ -450,7 +484,12 @@ export class HomePage extends Component {
 
         if (this.props.props.onClickActionClosePage && this.props.props.onClickActionClosePage.canExecute) {
 
-            this.props.props.onClickActionClosePage.execute();
+            this.setState({
+                BlocedButtonCLose: true
+            }, () => {
+                this.props.props.onClickActionClosePage.execute();
+            })
+
         }
 
 
@@ -486,7 +525,12 @@ export class HomePage extends Component {
 
             if (this.props.props.onClickActionVerify && this.props.props.onClickActionVerify.canExecute) {
 
-                this.props.props.onClickActionVerify.execute();
+                this.setState({
+                    BlockedbUttonVerfiy: true
+                }, () => {
+                    this.props.props.onClickActionVerify.execute();
+                })
+
             }
 
             ///this code in the below Must moved on Mendix Side to Verfiy in Server inoovatrics .
@@ -553,51 +597,44 @@ export class HomePage extends Component {
     };
 
 
-    componentDidUpdate() {
-        debugger;
+    componentDidUpdate() { 
 
-        if(this.state.NochangeFromhandling)
-        {
-            if(this.props.props.IsVerify.value)
-            {
-                if(this.props.props.AgePerson.value >= 12 )
-                {
-                  document.getElementById("sPersonFingerPrint").value = "1";
-                  document.getElementById("sPersonFingerPrint").disabled = true;
-                  this.props.props.ApplicantHimSelf.setValue(true);  
+        if (this.state.NochangeFromhandling) {
+            if (this.props.props.IsVerify.value == 'true') {
+                if (this.props.props.AgePerson.value >= 12) {
+                    document.getElementById("sPersonFingerPrint").value = "1";
+                    document.getElementById("sPersonFingerPrint").disabled = true;
+                    this.props.props.ApplicantHimSelf.setValue(true);
 
-                }else{
+                } else {
 
                     document.getElementById("sPersonFingerPrint").value = "2";
                     document.getElementById("sPersonFingerPrint").disabled = true;
-                    this.props.props.ApplicantHimSelf.setValue(false);  
+                    this.props.props.ApplicantHimSelf.setValue(false);
 
                 }
-            
 
-            }else{
 
-                if(this.props.props.AgePerson.value >= 18 )
-                {
-                 document.getElementById("sPersonFingerPrint").value = "1";
-                 document.getElementById("sPersonFingerPrint").disabled = true;
-                 this.props.props.ApplicantHimSelf.setValue(true);  
-                }else if(this.props.props.AgePerson.value < 12 )
-                {
+            } else {
+
+                if (this.props.props.AgePerson.value >= 18) {
+                    document.getElementById("sPersonFingerPrint").value = "1";
+                    document.getElementById("sPersonFingerPrint").disabled = true;
+                    this.props.props.ApplicantHimSelf.setValue(true);
+                } else if (this.props.props.AgePerson.value < 12) {
                     document.getElementById("sPersonFingerPrint").value = "2";
                     document.getElementById("sPersonFingerPrint").disabled = true;
-                    this.props.props.ApplicantHimSelf.setValue(false);  
-                }else if(this.props.props.AgePerson.value >= 12 && this.props.props.AgePerson.value < 18  )
-                {
-                    this.props.props.ApplicantHimSelf.setValue(true);    
-                } 
-    
+                    this.props.props.ApplicantHimSelf.setValue(false);
+                } else if (this.props.props.AgePerson.value >= 12 && this.props.props.AgePerson.value < 18) {
+                    this.props.props.ApplicantHimSelf.setValue(true);
+                }
+
 
             }
-           
+
         }
-         
-       
+
+
 
         setTimeout(() => {
 
@@ -1624,8 +1661,8 @@ export class HomePage extends Component {
 
         if (this.state.connectedDeviceCount == 0) {
             // SetCaptureOptions() if loop didn't run
-            // this.SetCaptureOptions();
-            alert("الرجاء توصيل جهاز ماسح البصمات بالكميوتر");
+            this.SetCaptureOptions();
+            // alert("الرجاء توصيل جهاز ماسح البصمات بالكميوتر");
         } else {
             dropdownFillFunctions[0](); // Start fill loop iterations
         }
@@ -2466,25 +2503,22 @@ export class HomePage extends Component {
 
     };
 
-    OnchangeHandleFingerPrint(event)
-    {
+    OnchangeHandleFingerPrint(event) {
         this.setState({
-            NochangeFromhandling : false
-        },()=>{
+            NochangeFromhandling: false
+        }, () => {
 
             var SelectedValue = event.target.value;
-        
-            if(SelectedValue == "1")
-            {
-             this.props.props.ApplicantHimSelf.setValue(true);  
-    
-            }else if(SelectedValue == "2" )
-            {
-             this.props.props.ApplicantHimSelf.setValue(false);  
-            } 
+
+            if (SelectedValue == "1") {
+                this.props.props.ApplicantHimSelf.setValue(true);
+
+            } else if (SelectedValue == "2") {
+                this.props.props.ApplicantHimSelf.setValue(false);
+            }
 
         })
-       
+
 
     }
 
@@ -2507,7 +2541,16 @@ export class HomePage extends Component {
 
         return (
             <Form>
+                {this.state.IsLoading ? <div className="parentDisable" style={{ width: "100%" }}>
+                    <div className='overlay-box'>
+
+                        <LoadingSpinner />
+                    </div>
+
+                </div> : ''}
+
                 <body style={{ direction: 'ltr', backgroundColor: "#eeeded" }}>
+
                     <div className="container first-div" >
                         <div className="row">
                             <div className="col-xs-12 col-sm-12 col-md-12 col-xl-12" style={{ display: 'grid', bottom: '90px' }}>
@@ -2516,7 +2559,7 @@ export class HomePage extends Component {
                                 <div className="col-xs-6 col-sm-6 col-md-6 col-xl-6" style={{ left: '25%' }}>
                                     <select id="sPersonFingerPrint" className="form-control SelectCaptureHand" onChange={(event) => this.OnchangeHandleFingerPrint(event)} >
                                         <option value="1">بصمة صاحب الجواز الحية</option>
-                                        <option value="2">بصمة ولي الأمر</option> 
+                                        <option value="2">بصمة ولي الأمر</option>
                                     </select>
                                 </div>
 
@@ -2557,10 +2600,10 @@ export class HomePage extends Component {
 
                                             </div>
                                             <div className="col-xs-12 col-sm-12 col-md-12 col-xl-12" style={{ zIndex: 1 }} >
-                                                <input type="button" onClick={() => this.closePage()} style={{ color: "white", backgroundColor: "#1f3646", fontSize: "18px", borderRadius: "12px", width: "80px" }} value="أغـلاق" />
-                                                <input type="button" onClick={() => this.ButtonVerfiyDeliverCapture()} style={{ display: this.props.props.EnableButtonVerify.value == 'false' ? "none" : "initial", color: "white", backgroundColor: "#1f3646", fontSize: "18px", borderRadius: "12px", width: "80px" }} value="تحـقق" />
-                                                <input type="button" onClick={() => this.UpdateFingerPrint()} style={{ display: this.props.props.EnableButtonUpdate.value == 'false' ? "none" : "initial", color: "white", backgroundColor: "#1f3646", fontSize: "18px", borderRadius: "12px", width: "80px" }} value="تعـديل" />
-                                                <input type="button" onClick={() => this.SaveFingerPrint()} style={{ display: this.props.props.EnableButtonSave.value == 'false' ? "none" : "initial", color: "white", backgroundColor: "#1f3646", fontSize: "18px", borderRadius: "12px", width: "80px" }} value="حفـظ" />
+                                                <input type="button" disabled={this.state.BlocedButtonCLose} onClick={() => this.closePage()} style={{ color: "white", backgroundColor: "#1f3646", fontSize: "18px", borderRadius: "12px", width: "80px" }} value="أغـلاق" />
+                                                <input type="button" disabled={this.state.BlockedbUttonVerfiy} onClick={() => this.ButtonVerfiyDeliverCapture()} style={{ display: this.props.props.EnableButtonVerify.value == 'false' ? "none" : "initial", color: "white", backgroundColor: "#1f3646", fontSize: "18px", borderRadius: "12px", width: "80px" }} value="تحـقق" />
+                                                <input type="button" disabled={this.state.BlockedButtonUpdate} onClick={() => this.UpdateFingerPrint()} style={{ display: this.props.props.EnableButtonUpdate.value == 'false' ? "none" : "initial", color: "white", backgroundColor: "#1f3646", fontSize: "18px", borderRadius: "12px", width: "80px" }} value="تعـديل" />
+                                                <input id="BtnSaveFinger" disabled={this.state.BlockedButtonsave} type="button" onClick={() => this.SaveFingerPrint()} style={{ display: this.props.props.EnableButtonSave.value == 'false' ? "none" : "initial", color: "white", backgroundColor: "#1f3646", fontSize: "18px", borderRadius: "12px", width: "80px" }} value="حفـظ" />
                                             </div>
 
                                         </div>
