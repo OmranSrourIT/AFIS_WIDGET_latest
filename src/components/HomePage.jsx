@@ -8,13 +8,13 @@ import { LoadingSpinner } from '../components/LoadingSpinner.js'
 export class HomePage extends Component {
 
     constructor(props) {
-        debugger;
+        
         super(props);
         this.state = {
 
             ApiSendFingerToSegmntationEndPoint2: "http://localhost:12345/api/AFISHome/SigmentationThumbs",
             ApiSendFingerToSegmntation: "http://localhost:12345/api/AFISHome/FingerPrintSegemntation",
-
+            ApiRestartService :"http://localhost:12345/api/AFISHome/RestartWindowsService?handString=1",
             IndexRight: true,
             MiddleRight: true,
             RingRight: true,
@@ -60,20 +60,13 @@ export class HomePage extends Component {
             FingerPrintExistRight: false,
             FingerPrintExistLeft: false,
             UrlCheackServiceRuning: "http://localhost:12345/api/AFISHome/CheackSerivceRuning",
-            NochangeFromhandling: true,
-            BlocedButtonCLose: false,
-            BlockedButtonsave: false,
-            BlockedButtonUpdate: false,
-            BlockedbUttonVerfiy: false,
-            IsLoading: false
-
+            NochangeFromhandling: true,  
         }
         this.ShowDeviceInfo = this.ShowDeviceInfo.bind(this);
         // this.CaptureLeftHand = this.CaptureLeftHand.bind(this);
         // this.CaptureRightHand = this.CaptureRightHand.bind(this);
         // this.CaptureThumbsHand = this.CaptureThumbsHand.bind(this);
-
-
+  
     }
 
     componentWillUnmount() {
@@ -81,8 +74,7 @@ export class HomePage extends Component {
     }
 
     componentDidMount() {
-
-
+         
         document.getElementById("FPScanner").style.display = 'block'
         document.getElementById("IV01").style.display = 'none'
 
@@ -92,6 +84,41 @@ export class HomePage extends Component {
         script1.async = false;
         document.body.appendChild(script1);
 
+        if(this.props.props.IsDeliverFingerCheck)
+        {
+            this.setState({
+
+                IndexRight: true,
+                MiddleRight: true,
+                RingRight: true,
+                LittleRight: true,
+
+                IndexLeft: true,
+                MiddleLeft: true,
+                RingLeft: true,
+                LittleLeft: true,
+
+                ThumbLeft: true,
+                ThumbRight: true,
+            })
+        }else{
+            this.setState({
+
+                IndexRight: false,
+                MiddleRight: false,
+                RingRight: false,
+                LittleRight: false,
+
+                IndexLeft: false,
+                MiddleLeft: false,
+                RingLeft: false,
+                LittleLeft: false,
+
+                ThumbLeft: false,
+                ThumbRight: false,
+            })
+        }
+
 
         axios.post(this.state.UrlCheackServiceRuning, this.state.AFIS_FAFM_Right)
             .then(response => {
@@ -100,20 +127,7 @@ export class HomePage extends Component {
 
                     ApiSendFingerToSegmntationEndPoint2: "http://localhost:12345/api/AFISHome/SigmentationThumbs",
                     ApiSendFingerToSegmntation: "http://localhost:12345/api/AFISHome/FingerPrintSegemntation",
-
-                    IndexRight: true,
-                    MiddleRight: true,
-                    RingRight: true,
-                    LittleRight: true,
-
-                    IndexLeft: true,
-                    MiddleLeft: true,
-                    RingLeft: true,
-                    LittleLeft: true,
-
-                    ThumbLeft: true,
-                    ThumbRight: true,
-
+ 
                     /* Demo IBSU  */
                     connectedDeviceCount: 0,
                     scannerDevice: undefined,
@@ -370,8 +384,7 @@ export class HomePage extends Component {
 
     SaveFingerPrint() {
 
-        debugger;
-
+        
         if (this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.fingerprints.length > 0) {
             if (this.state.IndexRight || this.state.MiddleRight || this.state.RingRight || this.state.LittleRight) {
                 if (this.state.AFIS_FAFM_Right.fingerprints.length == 0) {
@@ -394,31 +407,33 @@ export class HomePage extends Component {
             }
 
 
-            document.getElementById("BtnSaveFinger").disabled = true;
+            // document.getElementById("BtnSaveFinger").disabled = true;
 
             if (this.props.props.onClickActionSave && this.props.props.onClickActionSave.canExecute) {
-                this.setState({
-                    BlockedButtonsave: true, IsLoading: true
-                }, () => {
-                    this.props.props.onClickActionSave.execute();
 
-                    setInterval(() => {
-                        if (this.props.props.data)
-                            this.props.props.data.items.map((items ) => {
-                              if(items[Object.getOwnPropertySymbols(items)[0]].jsonData.attributes.IsMatchpic.value)
-                              {
-                                this.setState({
-                                    BlockedButtonsave: false, IsLoading: false
-                                })
-                              }
-                            })
+                this.props.props.onClickActionSave.execute();
+                // this.setState({
+                //     BlockedButtonsave: true 
+                // }, () => {
+
+                   
+
+                //     // setInterval(() => {
+                //     //     if (this.props.props.data)
+                //     //         this.props.props.data.items.map((items ) => {
+                //     //           if(items[Object.getOwnPropertySymbols(items)[0]].jsonData.attributes.IsMatchpic.value)
+                //     //           {
+                //     //             this.setState({
+                //     //                 BlockedButtonsave: false, IsLoading: false
+                //     //             })
+                //     //           }
+                //     //         })
                         
 
-                    }, 1)
+                //     // }, 1)
 
-
-
-                })
+ 
+                // })
             }
         } else {
             alert("يرجى اخذ البصمات اولا");
@@ -454,13 +469,7 @@ export class HomePage extends Component {
             }
 
             if (this.props.props.onClickActionUpdate && this.props.props.onClickActionUpdate.canExecute) {
-
-                this.setState({
-                    BlockedButtonUpdate: true
-                }, () => {
-                    this.props.props.onClickActionUpdate.execute();
-                })
-
+                this.props.props.onClickActionUpdate.execute(); 
             }
         } else {
             alert("يرجى اخذ البصمات اولا");
@@ -483,13 +492,7 @@ export class HomePage extends Component {
     closePage() {
 
         if (this.props.props.onClickActionClosePage && this.props.props.onClickActionClosePage.canExecute) {
-
-            this.setState({
-                BlocedButtonCLose: true
-            }, () => {
-                this.props.props.onClickActionClosePage.execute();
-            })
-
+            this.props.props.onClickActionClosePage.execute(); 
         }
 
 
@@ -524,13 +527,7 @@ export class HomePage extends Component {
 
 
             if (this.props.props.onClickActionVerify && this.props.props.onClickActionVerify.canExecute) {
-
-                this.setState({
-                    BlockedbUttonVerfiy: true
-                }, () => {
-                    this.props.props.onClickActionVerify.execute();
-                })
-
+                this.props.props.onClickActionVerify.execute(); 
             }
 
             ///this code in the below Must moved on Mendix Side to Verfiy in Server inoovatrics .
@@ -731,7 +728,7 @@ export class HomePage extends Component {
                                                         for (var x = 0; x < ResponseImage.fingerprints.length; x++) {
                                                             if (ResponseImage.fingerprints[x].position == 'RightThumb') {
                                                                 //add image to attribute RightImageThumb
-                                                                debugger;
+                                                               
                                                                 this.props.props.ImageRightThumb.setValue(ResponseImage.fingerprints[x].image.dataBytes);
 
                                                             } else if (ResponseImage.fingerprints[x].position == 'LeftThumb') {
@@ -793,7 +790,7 @@ export class HomePage extends Component {
                                                 this.setState({
                                                     FingerPrintExistRight: true
                                                 }, () => {
-                                                    debugger;
+                                                   
                                                     this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.fingerprints = this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.fingerprints.concat(JSON.parse(response.data).fingerprints);
                                                     this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.missingFingerprints = this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.missingFingerprints.concat(JSON.parse(response.data).missingFingerprints);
                                                     var ResponseImage = JSON.parse(response.data);
@@ -1662,6 +1659,14 @@ export class HomePage extends Component {
         if (this.state.connectedDeviceCount == 0) {
             // SetCaptureOptions() if loop didn't run
             this.SetCaptureOptions();
+            axios.get(this.state.ApiRestartService)
+                .then(res => {
+                  const DataResult = res.data;
+                 // alert("تم اعادة تهيئه الخدمة يرجى تحديث الصفحه");
+                }).catch(error => {
+                    alert("حصل خطأ في تهيئه الخدمة");
+                }
+                )
             // alert("الرجاء توصيل جهاز ماسح البصمات بالكميوتر");
         } else {
             dropdownFillFunctions[0](); // Start fill loop iterations
@@ -2012,6 +2017,16 @@ export class HomePage extends Component {
             this.EnableStopButton(false);
             this.EnableTakeImageButton(false);
             if (deviceIndex == -1) {
+
+                axios.get(this.state.ApiRestartService)
+                .then(res => {
+                  const DataResult = res.data;
+                 // alert("تم اعادة تهيئه الخدمة يرجى تحديث الصفحه");
+                }).catch(error => {
+                    alert("حصل خطأ في تهيئه الخدمة");
+                }
+                )
+                
                 alert("الرجاء توصيل جهاز ماسح البصمات بالكميوتر");
             } else {
                 this.Start();
@@ -2541,13 +2556,13 @@ export class HomePage extends Component {
 
         return (
             <Form>
-                {this.state.IsLoading ? <div className="parentDisable" style={{ width: "100%" }}>
+                {/* {this.state.IsLoading ? <div className="parentDisable" style={{ width: "100%" }}>
                     <div className='overlay-box'>
 
                         <LoadingSpinner />
                     </div>
 
-                </div> : ''}
+                </div> : ''} */}
 
                 <body style={{ direction: 'ltr', backgroundColor: "#eeeded" }}>
 
@@ -2600,10 +2615,10 @@ export class HomePage extends Component {
 
                                             </div>
                                             <div className="col-xs-12 col-sm-12 col-md-12 col-xl-12" style={{ zIndex: 1 }} >
-                                                <input type="button" disabled={this.state.BlocedButtonCLose} onClick={() => this.closePage()} style={{ color: "white", backgroundColor: "#1f3646", fontSize: "18px", borderRadius: "12px", width: "80px" }} value="أغـلاق" />
-                                                <input type="button" disabled={this.state.BlockedbUttonVerfiy} onClick={() => this.ButtonVerfiyDeliverCapture()} style={{ display: this.props.props.EnableButtonVerify.value == 'false' ? "none" : "initial", color: "white", backgroundColor: "#1f3646", fontSize: "18px", borderRadius: "12px", width: "80px" }} value="تحـقق" />
-                                                <input type="button" disabled={this.state.BlockedButtonUpdate} onClick={() => this.UpdateFingerPrint()} style={{ display: this.props.props.EnableButtonUpdate.value == 'false' ? "none" : "initial", color: "white", backgroundColor: "#1f3646", fontSize: "18px", borderRadius: "12px", width: "80px" }} value="تعـديل" />
-                                                <input id="BtnSaveFinger" disabled={this.state.BlockedButtonsave} type="button" onClick={() => this.SaveFingerPrint()} style={{ display: this.props.props.EnableButtonSave.value == 'false' ? "none" : "initial", color: "white", backgroundColor: "#1f3646", fontSize: "18px", borderRadius: "12px", width: "80px" }} value="حفـظ" />
+                                                <input type="button"   onClick={() => this.closePage()} style={{ color: "white", backgroundColor: "#1f3646", fontSize: "18px", borderRadius: "12px", width: "80px" }} value="أغـلاق" />
+                                                <input type="button"   onClick={() => this.ButtonVerfiyDeliverCapture()} style={{ display: this.props.props.EnableButtonVerify.value == 'false' ? "none" : "initial", color: "white", backgroundColor: "#1f3646", fontSize: "18px", borderRadius: "12px", width: "80px" }} value="تحـقق" />
+                                                <input type="button"   onClick={() => this.UpdateFingerPrint()} style={{ display: this.props.props.EnableButtonUpdate.value == 'false' ? "none" : "initial", color: "white", backgroundColor: "#1f3646", fontSize: "18px", borderRadius: "12px", width: "80px" }} value="تعـديل" />
+                                                <input id="BtnSaveFinger" type="button" onClick={() => this.SaveFingerPrint()} style={{ display: this.props.props.EnableButtonSave.value == 'false' ? "none" : "initial", color: "white", backgroundColor: "#1f3646", fontSize: "18px", borderRadius: "12px", width: "80px" }} value="حفـظ" />
                                             </div>
 
                                         </div>

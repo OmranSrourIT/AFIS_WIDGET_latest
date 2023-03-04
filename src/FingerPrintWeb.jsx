@@ -3,8 +3,7 @@ import { HomePage } from "./components/HomePage";
   
 export default class FingerPrintWeb extends Component {
 
-    constructor(props) {
-        debugger;
+    constructor(props) { 
         super(props);
     }
 

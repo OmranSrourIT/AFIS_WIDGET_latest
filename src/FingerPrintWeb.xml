@@ -146,13 +146,14 @@
         </propertyGroup> 
        
         <propertyGroup caption="Events">
-            <property key="data" type="datasource" isList="true" required="false">
-                <caption>Data source</caption>
-                <description />
-            </property> 
-            
-            
 
+
+            <property key="IsDeliverFingerCheck" type="boolean" defaultValue="false">
+                <caption>Is Deliver Finger Check</caption>
+                <description>this boolean configure when check all finger</description>
+            </property>
+
+             
             <property key="onClickActionSave" type="action" required="true">
                 <caption>On click action Save</caption>
                 <description>Action to trigger when button Save is clicked</description>
@@ -177,6 +178,8 @@
                 <caption>On click action Close</caption>
                 <description>Action to trigger when button Close is clicked</description>
             </property>
+
+
   
         </propertyGroup> 
         <propertyGroup caption="buttons Handle">
