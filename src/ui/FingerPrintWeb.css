@@ -1640,3 +1640,89 @@ input[type="button"] {
     position: relative;
     bottom: 165px; 
 }
+
+.QuailtyFingerSeg
+{
+    position: absolute;
+    bottom: 50%;
+    font-size: 12px;
+    color: green;
+    font-weight: bold;
+}
+
+.QuailtyFingerSegLow
+{
+    position: absolute;
+    bottom: 50%;
+    font-size: 12px; 
+    font-weight: bold; 
+    color: red;
+    right: -8px;
+    animation: zoom-in-zoom-out 1s ease infinite;
+}
+
+.QuailtyFingerSegThumbLeft {
+    font-size: 12px;
+    position: absolute;
+    bottom: 59%;
+    right: 2px;
+    rotate: 12px;
+    color: green;
+    font-weight: bold;
+}
+
+.QuailtyFingerSegThumbLeftLow {
+    font-size: 12px;
+    position: absolute;
+    bottom: 59%;
+    right: 10px; 
+    rotate: 12px;
+    font-weight: bold; 
+    color: red;
+    animation: zoom-in-zoom-out 1s ease infinite;
+}
+
+ 
+.QuailtyFingerSegRightThumb {
+    position: absolute;
+    bottom: 59%;
+    left: 5px;
+    font-size: 12px;
+    color: green;
+    font-weight: bold;
+}
+
+.QuailtyFingerSegRightThumbLow {
+    position: absolute;
+    bottom: 59%; 
+    font-size: 12px;
+    font-weight: bold; 
+    color: red;
+    animation: zoom-in-zoom-out 1s ease infinite;
+}
+
+.LowQuailty{
+    position: absolute;
+    bottom: 50%;
+    right: -6px;
+    color: red;
+    font-size: 12px;
+    font-weight: bold;
+    animation: zoom-in-zoom-out 1s ease infinite;
+}
+
+@keyframes zoom-in-zoom-out {
+  0% {
+    transform: scale(1, 1);
+  }
+  50% {
+    transform: scale(1.5, 1.5);
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+  
+}
+ 
+  
+

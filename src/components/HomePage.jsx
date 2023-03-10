@@ -8,13 +8,13 @@ import { LoadingSpinner } from '../components/LoadingSpinner.js'
 export class HomePage extends Component {
 
     constructor(props) {
-        
+
         super(props);
         this.state = {
 
             ApiSendFingerToSegmntationEndPoint2: "http://localhost:12345/api/AFISHome/SigmentationThumbs",
             ApiSendFingerToSegmntation: "http://localhost:12345/api/AFISHome/FingerPrintSegemntation",
-            ApiRestartService :"http://localhost:12345/api/AFISHome/RestartWindowsService?handString=1",
+            ApiRestartService: "http://localhost:12345/api/AFISHome/RestartWindowsService?handString=1",
             IndexRight: true,
             MiddleRight: true,
             RingRight: true,
@@ -55,18 +55,37 @@ export class HomePage extends Component {
             AFIS_FAFM_Thumbs: { position: "Thumbs", image: { dataBytes: "", format: "bmp" }, fingerprints: [], missingFingerprints: [] },
             AFIS_FingerApllicationFingerModulty: { enrollAction: { enrollActionType: "None" }, fingerprintModality: { fingerprints: [], missingFingerprints: [] } },
             AFIS_VerfiyFingerPrint: { parameters: { maxRotation: 180, threshold: 75 }, references: [{ fingerprints: [] }] },
+            afis_rightarray : [],
+            afis_Leftarray : [],
+            afis_Thumbsarray : [],
             SigPicTrue: false,
             FingerPrintExistThumb: false,
             FingerPrintExistRight: false,
             FingerPrintExistLeft: false,
             UrlCheackServiceRuning: "http://localhost:12345/api/AFISHome/CheackSerivceRuning",
-            NochangeFromhandling: true,  
+            NochangeFromhandling: true,
+
+
+            ////QuailtyFingers 
+            IndexRightQuailty: "",
+            MiddleRightQuailty: "",
+            RingRightQuailty: "",
+            LittleRightQuailty: "",
+
+            IndexLeftQuailty: "",
+            MiddleLeftQuailty: "",
+            RingLeftQuailty: "",
+            LittleLeftQuailty: "",
+
+            ThumbLeftQuailty: "",
+            ThumbRightQuailty: "",
         }
         this.ShowDeviceInfo = this.ShowDeviceInfo.bind(this);
+        this.SaveFingerPrint = this.SaveFingerPrint.bind(this);
         // this.CaptureLeftHand = this.CaptureLeftHand.bind(this);
         // this.CaptureRightHand = this.CaptureRightHand.bind(this);
         // this.CaptureThumbsHand = this.CaptureThumbsHand.bind(this);
-  
+
     }
 
     componentWillUnmount() {
@@ -74,7 +93,7 @@ export class HomePage extends Component {
     }
 
     componentDidMount() {
-         
+
         document.getElementById("FPScanner").style.display = 'block'
         document.getElementById("IV01").style.display = 'none'
 
@@ -84,8 +103,7 @@ export class HomePage extends Component {
         script1.async = false;
         document.body.appendChild(script1);
 
-        if(this.props.props.IsDeliverFingerCheck)
-        {
+        if (this.props.props.IsDeliverFingerCheck) {
             this.setState({
 
                 IndexRight: true,
@@ -101,7 +119,7 @@ export class HomePage extends Component {
                 ThumbLeft: true,
                 ThumbRight: true,
             })
-        }else{
+        } else {
             this.setState({
 
                 IndexRight: false,
@@ -127,7 +145,7 @@ export class HomePage extends Component {
 
                     ApiSendFingerToSegmntationEndPoint2: "http://localhost:12345/api/AFISHome/SigmentationThumbs",
                     ApiSendFingerToSegmntation: "http://localhost:12345/api/AFISHome/FingerPrintSegemntation",
- 
+
                     /* Demo IBSU  */
                     connectedDeviceCount: 0,
                     scannerDevice: undefined,
@@ -384,7 +402,7 @@ export class HomePage extends Component {
 
     SaveFingerPrint() {
 
-        
+
         if (this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.fingerprints.length > 0) {
             if (this.state.IndexRight || this.state.MiddleRight || this.state.RingRight || this.state.LittleRight) {
                 if (this.state.AFIS_FAFM_Right.fingerprints.length == 0) {
@@ -405,36 +423,13 @@ export class HomePage extends Component {
                     return;
                 }
             }
-
-
-            // document.getElementById("BtnSaveFinger").disabled = true;
-
-            if (this.props.props.onClickActionSave && this.props.props.onClickActionSave.canExecute) {
-
-                this.props.props.onClickActionSave.execute();
-                // this.setState({
-                //     BlockedButtonsave: true 
-                // }, () => {
-
-                   
-
-                //     // setInterval(() => {
-                //     //     if (this.props.props.data)
-                //     //         this.props.props.data.items.map((items ) => {
-                //     //           if(items[Object.getOwnPropertySymbols(items)[0]].jsonData.attributes.IsMatchpic.value)
-                //     //           {
-                //     //             this.setState({
-                //     //                 BlockedButtonsave: false, IsLoading: false
-                //     //             })
-                //     //           }
-                //     //         })
-                        
-
-                //     // }, 1)
-
  
-                // })
-            }
+
+             if (this.props.props.onClickActionSave && this.props.props.onClickActionSave.canExecute) {
+
+            this.props.props.onClickActionSave.execute();
+            
+          }
         } else {
             alert("يرجى اخذ البصمات اولا");
             return;
@@ -469,7 +464,7 @@ export class HomePage extends Component {
             }
 
             if (this.props.props.onClickActionUpdate && this.props.props.onClickActionUpdate.canExecute) {
-                this.props.props.onClickActionUpdate.execute(); 
+                this.props.props.onClickActionUpdate.execute();
             }
         } else {
             alert("يرجى اخذ البصمات اولا");
@@ -492,7 +487,7 @@ export class HomePage extends Component {
     closePage() {
 
         if (this.props.props.onClickActionClosePage && this.props.props.onClickActionClosePage.canExecute) {
-            this.props.props.onClickActionClosePage.execute(); 
+            this.props.props.onClickActionClosePage.execute();
         }
 
 
@@ -527,7 +522,7 @@ export class HomePage extends Component {
 
 
             if (this.props.props.onClickActionVerify && this.props.props.onClickActionVerify.canExecute) {
-                this.props.props.onClickActionVerify.execute(); 
+                this.props.props.onClickActionVerify.execute();
             }
 
             ///this code in the below Must moved on Mendix Side to Verfiy in Server inoovatrics .
@@ -594,7 +589,49 @@ export class HomePage extends Component {
     };
 
 
-    componentDidUpdate() { 
+    componentDidUpdate() {
+
+        // IndexRight: true,
+        // MiddleRight: true,
+        // RingRight: true,
+        // LittleRight: true,
+
+        // IndexLeft: true,
+        // MiddleLeft: true,
+        // RingLeft: true,
+        // LittleLeft: true,
+
+        // ThumbLeft: true,
+        // ThumbRight: true,
+
+        if (this.state.IndexRight == false) {
+            this.props.props.ImageRightIndex.setValue("");
+
+        } if (this.state.MiddleRight == false) {
+            this.props.props.ImageRightMiddle.setValue("");
+        } if (this.state.RingRight == false) {
+            this.props.props.ImageRightRing.setValue("");
+        } if (this.state.LittleRight == false) {
+            this.props.props.ImageRightLittle.setValue("");
+        } if (this.state.IndexLeft == false) {
+            this.props.props.ImageLeftIndex.setValue("");
+        } if (this.state.MiddleLeft == false) {
+            this.props.props.ImageLeftMiddle.setValue("");
+        } if (this.state.RingLeft == false) {
+            this.props.props.ImageLeftRing.setValue("");
+        } if (this.state.LittleLeft == false) {
+            this.props.props.ImageLeftLittle.setValue("");
+        } if (this.state.ThumbLeft == false) {
+            this.props.props.ImageLeftThumb.setValue("");
+        } if (this.state.ThumbRight == false) {
+            this.props.props.ImageRightThumb.setValue("");
+        }
+
+
+
+
+
+
 
         if (this.state.NochangeFromhandling) {
             if (this.props.props.IsVerify.value == 'true') {
@@ -688,10 +725,14 @@ export class HomePage extends Component {
 
                         if (this.state.TypeId == 3) {
 
-                            const ObjectPramThumbs = this.state.AFIS_FAFM_Thumbs;
-
+                            const ObjectPramThumbs = this.state.AFIS_FAFM_Thumbs; 
                             axios.post(this.state.ApiSendFingerToSegmntationEndPoint2, ObjectPramThumbs)
                                 .then(response => {
+                                    this.setState({
+                                        afis_Thumbsarray :[],
+                                        ThumbLeftQuailty :'' , 
+                                        ThumbRightQuailty:''
+                                    })
 
                                     this.Stop();
                                     if (response.data == "") {
@@ -714,11 +755,26 @@ export class HomePage extends Component {
 
 
                                         }
+
                                         else {
-                                            if (!this.state.FingerPrintExistThumb) {
+                                            debugger;
+                                            if (JSON.parse(response.data).fingerprints.length > 0) {
+                                                for (var v = 0; v < JSON.parse(response.data).fingerprints.length > 0; v++) {
+                                                    if (JSON.parse(response.data).fingerprints[v].image.QualityFinger == "منخفضة") {
+                                                        alert(" دقة البصمات قليلة للإبهام, يرجى اعادة التنصيم او قم ب الغاء الاصابع الجودتها قليلة ");
+                                                        break;
+                                                    }
+                                                }
+
+
+                                            }
+
+                                            // if (!this.state.FingerPrintExistThumb) {
                                                 this.setState({
                                                     FingerPrintExistThumb: true,
                                                 }, () => {
+
+                                                   this.state.afis_Thumbsarray = this.state.afis_Thumbsarray.concat(JSON.parse(response.data).fingerprints);
 
                                                     this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.fingerprints = this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.fingerprints.concat(JSON.parse(response.data).fingerprints);
                                                     this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.missingFingerprints = this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.missingFingerprints.concat(JSON.parse(response.data).missingFingerprints);
@@ -727,12 +783,17 @@ export class HomePage extends Component {
                                                     if (ResponseImage.fingerprints.length > 0) {
                                                         for (var x = 0; x < ResponseImage.fingerprints.length; x++) {
                                                             if (ResponseImage.fingerprints[x].position == 'RightThumb') {
-                                                                //add image to attribute RightImageThumb
-                                                               
+                                                                this.setState({
+                                                                    ThumbRightQuailty: ResponseImage.fingerprints[x].image.QualityFinger
+                                                                })
+                                                                //add image to attribute RightImageThumb 
                                                                 this.props.props.ImageRightThumb.setValue(ResponseImage.fingerprints[x].image.dataBytes);
 
                                                             } else if (ResponseImage.fingerprints[x].position == 'LeftThumb') {
                                                                 //add image to attribute LeftImageThumb
+                                                                this.setState({
+                                                                    ThumbLeftQuailty: ResponseImage.fingerprints[x].image.QualityFinger
+                                                                })
                                                                 this.props.props.ImageLeftThumb.setValue(ResponseImage.fingerprints[x].image.dataBytes);
 
                                                             }
@@ -746,9 +807,9 @@ export class HomePage extends Component {
 
 
 
-                                            } else {
-                                                alert("لقد تم اخذ البصمات الابهام بالفعل")
-                                            }
+                                            // } else {
+                                            //     alert("لقد تم اخذ البصمات الابهام بالفعل")
+                                            // }
 
                                         }
 
@@ -768,6 +829,14 @@ export class HomePage extends Component {
                             axios.post(this.state.ApiSendFingerToSegmntation, ObjectPramThumbs)
                                 .then(response => {
 
+                                    this.setState({
+                                        afis_rightarray :[], 
+                                        IndexRightQuailty :'',
+                                        MiddleRightQuailty :'',
+                                        RingRightQuailty :'',
+                                        LittleRightQuailty :''
+                                    })
+
                                     this.Stop();
                                     if (response.data == "") {
                                         alert("حصل خطأ عند تقسيم اصابع اليد اليمنى");
@@ -786,11 +855,26 @@ export class HomePage extends Component {
 
                                         } else {
 
-                                            if (!this.state.FingerPrintExistRight) {
+                                            debugger;
+                                            if (JSON.parse(response.data).fingerprints.length > 0) {
+                                                for (var v = 0; v < JSON.parse(response.data).fingerprints.length > 0; v++) {
+                                                    if (JSON.parse(response.data).fingerprints[v].image.QualityFinger == "منخفضة") {
+                                                        alert(" دقة البصمات قليلة  لليد اليمنى , يرجى اعادة التنصيم او قم ب الغاء الاصابع الجودتها قليلة ");
+                                                        break;
+                                                    }
+                                                }
+
+
+                                            }
+
+
+                                            // if (!this.state.FingerPrintExistRight) {
                                                 this.setState({
                                                     FingerPrintExistRight: true
                                                 }, () => {
-                                                   
+                                                    
+                                                    this.state.afis_rightarray = this.state.afis_rightarray.concat(JSON.parse(response.data).fingerprints);
+
                                                     this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.fingerprints = this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.fingerprints.concat(JSON.parse(response.data).fingerprints);
                                                     this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.missingFingerprints = this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.missingFingerprints.concat(JSON.parse(response.data).missingFingerprints);
                                                     var ResponseImage = JSON.parse(response.data);
@@ -800,12 +884,24 @@ export class HomePage extends Component {
                                                         for (var x = 0; x < ResponseImage.fingerprints.length; x++) {
 
                                                             if (ResponseImage.fingerprints[x].position == 'RightIndex') {
+                                                                this.setState({
+                                                                    IndexRightQuailty: ResponseImage.fingerprints[x].image.QualityFinger
+                                                                })
                                                                 this.props.props.ImageRightIndex.setValue(ResponseImage.fingerprints[x].image.dataBytes);
                                                             } else if (ResponseImage.fingerprints[x].position == 'RightMiddle') {
+                                                                this.setState({
+                                                                    MiddleRightQuailty: ResponseImage.fingerprints[x].image.QualityFinger
+                                                                })
                                                                 this.props.props.ImageRightMiddle.setValue(ResponseImage.fingerprints[x].image.dataBytes);
                                                             } else if (ResponseImage.fingerprints[x].position == 'RightRing') {
+                                                                this.setState({
+                                                                    RingRightQuailty: ResponseImage.fingerprints[x].image.QualityFinger
+                                                                })
                                                                 this.props.props.ImageRightRing.setValue(ResponseImage.fingerprints[x].image.dataBytes);
                                                             } else if (ResponseImage.fingerprints[x].position == 'RightLittle') {
+                                                                this.setState({
+                                                                    LittleRightQuailty: ResponseImage.fingerprints[x].image.QualityFinger
+                                                                })
                                                                 this.props.props.ImageRightLittle.setValue(ResponseImage.fingerprints[x].image.dataBytes);
                                                             }
 
@@ -818,9 +914,9 @@ export class HomePage extends Component {
                                                 })
 
 
-                                            } else {
-                                                alert("لقد تم اخذ البصمات اليد اليمنى بالفعل")
-                                            }
+                                            // } else {
+                                            //     alert("لقد تم اخذ البصمات اليد اليمنى بالفعل")
+                                            // }
 
                                         }
 
@@ -845,6 +941,15 @@ export class HomePage extends Component {
                             axios.post(this.state.ApiSendFingerToSegmntation, ObjectPramThumbs)
                                 .then(response => {
 
+                                    this.setState({
+                                        afis_Leftarray :[] , 
+                                        IndexLeftQuailty:'',
+                                        MiddleLeftQuailty:'',
+                                        RingLeftQuailty : '',
+                                        LittleLeftQuailty:''
+                                    })
+
+
                                     this.Stop();
                                     if (response.data == "") {
                                         alert("حصل خطأ عند تقسيم اصابع اليد اليسرى");
@@ -864,10 +969,25 @@ export class HomePage extends Component {
 
                                         } else {
 
-                                            if (!this.state.FingerPrintExistLeft) {
+                                            debugger;
+                                            if (JSON.parse(response.data).fingerprints.length > 0) {
+                                                for (var v = 0; v < JSON.parse(response.data).fingerprints.length > 0; v++) {
+                                                    if (JSON.parse(response.data).fingerprints[v].image.QualityFinger == "منخفضة") {
+                                                        alert(" دقة البصمات قليلة لليد اليسرى , يرجى اعادة التنصيم او قم ب الغاء الاصابع الجودتها قليلة ");
+                                                        break;
+                                                    }
+                                                }
+
+
+                                            }
+
+
+                                            // if (!this.state.FingerPrintExistLeft) {
                                                 this.setState({
                                                     FingerPrintExistLeft: true
                                                 }, () => {
+
+                                                    this.state.afis_Leftarray = this.state.afis_Leftarray.concat(JSON.parse(response.data).fingerprints);
 
                                                     this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.fingerprints = this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.fingerprints.concat(JSON.parse(response.data).fingerprints);
                                                     this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.missingFingerprints = this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.missingFingerprints.concat(JSON.parse(response.data).missingFingerprints);
@@ -878,12 +998,24 @@ export class HomePage extends Component {
                                                         for (var x = 0; x < ResponseImage.fingerprints.length; x++) {
 
                                                             if (ResponseImage.fingerprints[x].position == 'LeftLittle') {
+                                                                this.setState({
+                                                                    LittleLeftQuailty: ResponseImage.fingerprints[x].image.QualityFinger
+                                                                })
                                                                 this.props.props.ImageLeftLittle.setValue(ResponseImage.fingerprints[x].image.dataBytes);
                                                             } else if (ResponseImage.fingerprints[x].position == 'LeftRing') {
+                                                                this.setState({
+                                                                    RingLeftQuailty: ResponseImage.fingerprints[x].image.QualityFinger
+                                                                })
                                                                 this.props.props.ImageLeftRing.setValue(ResponseImage.fingerprints[x].image.dataBytes);
                                                             } else if (ResponseImage.fingerprints[x].position == 'LeftMiddle') {
+                                                                this.setState({
+                                                                    MiddleLeftQuailty: ResponseImage.fingerprints[x].image.QualityFinger
+                                                                })
                                                                 this.props.props.ImageLeftMiddle.setValue(ResponseImage.fingerprints[x].image.dataBytes);
                                                             } else if (ResponseImage.fingerprints[x].position == 'LeftIndex') {
+                                                                this.setState({
+                                                                    IndexLeftQuailty: ResponseImage.fingerprints[x].image.QualityFinger
+                                                                })
                                                                 this.props.props.ImageLeftIndex.setValue(ResponseImage.fingerprints[x].image.dataBytes);
                                                             }
 
@@ -894,9 +1026,9 @@ export class HomePage extends Component {
 
 
                                                 })
-                                            } else {
-                                                alert("لقد تم اخذ البصمات اليد اليسرى بالفعل")
-                                            }
+                                            // } else {
+                                            //     alert("لقد تم اخذ البصمات اليد اليسرى بالفعل")
+                                            // }
 
 
                                         }
@@ -1661,8 +1793,8 @@ export class HomePage extends Component {
             this.SetCaptureOptions();
             axios.get(this.state.ApiRestartService)
                 .then(res => {
-                  const DataResult = res.data;
-                 // alert("تم اعادة تهيئه الخدمة يرجى تحديث الصفحه");
+                    const DataResult = res.data;
+                    // alert("تم اعادة تهيئه الخدمة يرجى تحديث الصفحه");
                 }).catch(error => {
                     alert("حصل خطأ في تهيئه الخدمة");
                 }
@@ -2019,14 +2151,14 @@ export class HomePage extends Component {
             if (deviceIndex == -1) {
 
                 axios.get(this.state.ApiRestartService)
-                .then(res => {
-                  const DataResult = res.data;
-                 // alert("تم اعادة تهيئه الخدمة يرجى تحديث الصفحه");
-                }).catch(error => {
-                    alert("حصل خطأ في تهيئه الخدمة");
-                }
-                )
-                
+                    .then(res => {
+                        const DataResult = res.data;
+                        // alert("تم اعادة تهيئه الخدمة يرجى تحديث الصفحه");
+                    }).catch(error => {
+                        alert("حصل خطأ في تهيئه الخدمة");
+                    }
+                    )
+
                 alert("الرجاء توصيل جهاز ماسح البصمات بالكميوتر");
             } else {
                 this.Start();
@@ -2615,9 +2747,9 @@ export class HomePage extends Component {
 
                                             </div>
                                             <div className="col-xs-12 col-sm-12 col-md-12 col-xl-12" style={{ zIndex: 1 }} >
-                                                <input type="button"   onClick={() => this.closePage()} style={{ color: "white", backgroundColor: "#1f3646", fontSize: "18px", borderRadius: "12px", width: "80px" }} value="أغـلاق" />
-                                                <input type="button"   onClick={() => this.ButtonVerfiyDeliverCapture()} style={{ display: this.props.props.EnableButtonVerify.value == 'false' ? "none" : "initial", color: "white", backgroundColor: "#1f3646", fontSize: "18px", borderRadius: "12px", width: "80px" }} value="تحـقق" />
-                                                <input type="button"   onClick={() => this.UpdateFingerPrint()} style={{ display: this.props.props.EnableButtonUpdate.value == 'false' ? "none" : "initial", color: "white", backgroundColor: "#1f3646", fontSize: "18px", borderRadius: "12px", width: "80px" }} value="تعـديل" />
+                                                <input type="button" onClick={() => this.closePage()} style={{ color: "white", backgroundColor: "#1f3646", fontSize: "18px", borderRadius: "12px", width: "80px" }} value="أغـلاق" />
+                                                <input type="button" onClick={() => this.ButtonVerfiyDeliverCapture()} style={{ display: this.props.props.EnableButtonVerify.value == 'false' ? "none" : "initial", color: "white", backgroundColor: "#1f3646", fontSize: "18px", borderRadius: "12px", width: "80px" }} value="تحـقق" />
+                                                <input type="button" onClick={() => this.UpdateFingerPrint()} style={{ display: this.props.props.EnableButtonUpdate.value == 'false' ? "none" : "initial", color: "white", backgroundColor: "#1f3646", fontSize: "18px", borderRadius: "12px", width: "80px" }} value="تعـديل" />
                                                 <input id="BtnSaveFinger" type="button" onClick={() => this.SaveFingerPrint()} style={{ display: this.props.props.EnableButtonSave.value == 'false' ? "none" : "initial", color: "white", backgroundColor: "#1f3646", fontSize: "18px", borderRadius: "12px", width: "80px" }} value="حفـظ" />
                                             </div>
 
@@ -2801,22 +2933,25 @@ export class HomePage extends Component {
                                                     </svg>
                                                     <ul className="lefhandlist">
                                                         {/* onchange="ChnageCheckRadio(this)" */}
-                                                        <li className="pinkyFingerLeft" style={{ background: 'rgb(217 217 217)' }} > <input type="checkbox" onChange={() => this.setState({
+                                                        <li className="pinkyFingerLeft" style={{ background: 'rgb(217 217 217)' }} ><p className={this.state.LittleLeftQuailty == "عالية" ?"QuailtyFingerSeg":"QuailtyFingerSegLow"}>{this.state.LittleLeftQuailty}</p> <input type="checkbox" onChange={() => this.setState({
                                                             LittleLeft: !this.state.LittleLeft
                                                         })} checked={this.state.LittleLeft} title="الخنصر - اليد اليسرى" value="0"></input></li>
                                                         {/* onchange="ChnageCheckRadio(this)" */}
-                                                        <li className="ringFingerLeft" style={{ background: 'rgb(217 217 217)' }}><input type="checkbox" onChange={() => this.setState({
+                                                        <li className="ringFingerLeft" style={{ background: 'rgb(217 217 217)' }}><p className={this.state.RingLeftQuailty == "عالية" ?"QuailtyFingerSeg":"QuailtyFingerSegLow"}>{this.state.RingLeftQuailty}</p><input type="checkbox" onChange={() => this.setState({
                                                             RingLeft: !this.state.RingLeft
                                                         })} checked={this.state.RingLeft} title="البنصر - اليد اليسرى" value="1"></input></li>
                                                         {/* onchange="ChnageCheckRadio(this)"  */}
-                                                        <li className="middleFingerLeft" style={{ background: 'rgb(217 217 217)' }}><input type="checkbox" onChange={() => this.setState({
+                                                        <li className="middleFingerLeft" style={{ background: 'rgb(217 217 217)' }}><p className={this.state.MiddleLeftQuailty == "عالية" ?"QuailtyFingerSeg":"QuailtyFingerSegLow"}>{this.state.MiddleLeftQuailty}</p><input type="checkbox" onChange={() => this.setState({
                                                             MiddleLeft: !this.state.MiddleLeft
                                                         })} checked={this.state.MiddleLeft} title="الوسطى - اليد اليسرى" value="2"></input></li>
                                                         {/* onchange="ChnageCheckRadio(this)" */}
-                                                        <li className="indexFingerLeft" style={{ background: 'rgb(217 217 217)' }}><input type="checkbox" onChange={() => this.setState({
+                                                        <li className="indexFingerLeft" style={{ background: 'rgb(217 217 217)' }}><p className={this.state.IndexLeftQuailty == "عالية" ?"QuailtyFingerSeg":"QuailtyFingerSegLow"}>{this.state.IndexLeftQuailty}</p><input type="checkbox" onChange={() => this.setState({
                                                             IndexLeft: !this.state.IndexLeft
                                                         })} checked={this.state.IndexLeft} title="السبابة - اليد اليسرى" value="3"></input></li>
                                                         {/* onchange="ChnageCheckRadio(this)" */}
+                                                        
+                                                        <p className={this.state.ThumbLeftQuailty == "عالية" ?"QuailtyFingerSegThumbLeft":"QuailtyFingerSegThumbLeftLow"}>{this.state.ThumbLeftQuailty}</p>
+
                                                         <li className="thumbFingerLeft" style={{ background: 'rgb(217 217 217)' }}><input type="checkbox" onChange={() => this.setState({
                                                             ThumbLeft: !this.state.ThumbLeft
                                                         })} checked={this.state.ThumbLeft} title="الإبهام - اليد اليسرى" value="4"></input></li>
@@ -2859,23 +2994,28 @@ export class HomePage extends Component {
                                                     </svg>
                                                     <ul className="righthandlist">
                                                         {/* onchange="ChnageCheckRadio(this)" */}
-                                                        <li className="thumbFingerRight" style={{ background: 'rgb(217 217 217)' }}><input type="checkbox" onChange={() => this.setState({
+
+                                                        <p className={this.state.ThumbRightQuailty == "عالية" ?"QuailtyFingerSegRightThumb" : "QuailtyFingerSegRightThumbLow"}>{this.state.ThumbRightQuailty}</p>
+                                                        <li className="thumbFingerRight" style={{ background: 'rgb(217 217 217)' }}> <input type="checkbox" onChange={() => this.setState({
                                                             ThumbRight: !this.state.ThumbRight
                                                         })} checked={this.state.ThumbRight} title="الإبهام - اليد اليمنى" value="5"></input></li>
                                                         {/* onchange="ChnageCheckRadio(this)" */}
-                                                        <li className="indexFingerRight" style={{ background: 'rgb(217 217 217)' }}><input type="checkbox" onChange={() => this.setState({
+
+                                                        <li className="indexFingerRight" style={{ background: 'rgb(217 217 217)' }}><p className={this.state.IndexRightQuailty == "عالية" ? "QuailtyFingerSeg":"LowQuailty"}>{this.state.IndexRightQuailty}</p><input type="checkbox" onChange={() => this.setState({
                                                             IndexRight: !this.state.IndexRight
                                                         })} checked={this.state.IndexRight} title="السبابة - اليد اليمنى" value="6"></input></li>
                                                         {/* onchange="ChnageCheckRadio(this)" */}
-                                                        <li className="middleFingerRight" style={{ background: 'rgb(217 217 217)' }}><input type="checkbox" onChange={() => this.setState({
+
+                                                        <li className="middleFingerRight" style={{ background: 'rgb(217 217 217)' }}> <p className={this.state.MiddleRightQuailty == "عالية" ? "QuailtyFingerSeg":"LowQuailty"}>{this.state.MiddleRightQuailty}</p><input type="checkbox" onChange={() => this.setState({
                                                             MiddleRight: !this.state.MiddleRight
                                                         })} checked={this.state.MiddleRight} title="الوسطى - اليد اليمنى" value="7"></input></li>
                                                         {/* onchange="ChnageCheckRadio(this)" */}
-                                                        <li className="ringFingerRight" style={{ background: 'rgb(217 217 217)' }}><input type="checkbox" onChange={() => this.setState({
+
+                                                        <li className="ringFingerRight" style={{ background: 'rgb(217 217 217)' }}>  <p className={this.state.RingRightQuailty == "عالية" ? "QuailtyFingerSeg":"LowQuailty"}>{this.state.RingRightQuailty}</p><input type="checkbox" onChange={() => this.setState({
                                                             RingRight: !this.state.RingRight
                                                         })} checked={this.state.RingRight} title="البنصر - اليد اليمنى" value="8"></input></li>
                                                         {/* onchange="ChnageCheckRadio(this)" */}
-                                                        <li className="pinkyFingerRight" style={{ background: 'rgb(217 217 217)' }}><input type="checkbox" onChange={() => this.setState({
+                                                        <li className="pinkyFingerRight" style={{ background: 'rgb(217 217 217)' }}> <p className={this.state.LittleRightQuailty == "عالية" ? "QuailtyFingerSeg":"LowQuailty"}>{this.state.LittleRightQuailty}</p><input type="checkbox" onChange={() => this.setState({
                                                             LittleRight: !this.state.LittleRight
                                                         })} checked={this.state.LittleRight} title="الخنصر - اليد اليمنى" value="9"></input></li>
                                                     </ul>
