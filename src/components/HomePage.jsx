@@ -605,26 +605,26 @@ export class HomePage extends Component {
         // ThumbRight: true,
 
         if (this.state.IndexRight == false) {
-            this.props.props.ImageRightIndex.setValue("");
+            this.props.props.ImageRightIndex.setValue();
 
         } if (this.state.MiddleRight == false) {
-            this.props.props.ImageRightMiddle.setValue("");
+            this.props.props.ImageRightMiddle.setValue();
         } if (this.state.RingRight == false) {
-            this.props.props.ImageRightRing.setValue("");
+            this.props.props.ImageRightRing.setValue();
         } if (this.state.LittleRight == false) {
-            this.props.props.ImageRightLittle.setValue("");
+            this.props.props.ImageRightLittle.setValue();
         } if (this.state.IndexLeft == false) {
-            this.props.props.ImageLeftIndex.setValue("");
+            this.props.props.ImageLeftIndex.setValue();
         } if (this.state.MiddleLeft == false) {
-            this.props.props.ImageLeftMiddle.setValue("");
+            this.props.props.ImageLeftMiddle.setValue();
         } if (this.state.RingLeft == false) {
-            this.props.props.ImageLeftRing.setValue("");
+            this.props.props.ImageLeftRing.setValue();
         } if (this.state.LittleLeft == false) {
-            this.props.props.ImageLeftLittle.setValue("");
+            this.props.props.ImageLeftLittle.setValue();
         } if (this.state.ThumbLeft == false) {
-            this.props.props.ImageLeftThumb.setValue("");
+            this.props.props.ImageLeftThumb.setValue();
         } if (this.state.ThumbRight == false) {
-            this.props.props.ImageRightThumb.setValue("");
+            this.props.props.ImageRightThumb.setValue();
         }
 
 
@@ -715,7 +715,6 @@ export class HomePage extends Component {
                         message = imgTypeName + " acquisition successful";
 
 
-
                         this.state.AFIS_FAFM_Left.image.dataBytes = scannerImage.StrImageBitmapBase64 //Type 2
 
                         this.state.AFIS_FAFM_Right.image.dataBytes = scannerImage.StrImageBitmapBase64 //Type 1
@@ -736,11 +735,18 @@ export class HomePage extends Component {
 
                                     this.Stop();
                                     if (response.data == "") {
+                                        this.setState({
+                                            AFIS_FAFM_Thumbs: { position: "Thumbs", image: { dataBytes: "", format: "bmp" }, fingerprints: [], missingFingerprints: [], TypeId: 0 }
+                                        })
 
                                         alert("حصل خطا عند تقسيم الاصابع لبصمات الابهام");
 
                                     } else {
                                         if (response.data == "105" || response.data == "101") {
+
+                                            this.setState({
+                                                AFIS_FAFM_Thumbs: { position: "Thumbs", image: { dataBytes: "", format: "bmp" }, fingerprints: [], missingFingerprints: [], TypeId: 0 }
+                                            })
 
                                             alert("البصمات المرفقه غير مطابقه مع البصمات المختارة لبصمات الابهام");
 
@@ -761,6 +767,7 @@ export class HomePage extends Component {
                                             if (JSON.parse(response.data).fingerprints.length > 0) {
                                                 for (var v = 0; v < JSON.parse(response.data).fingerprints.length > 0; v++) {
                                                     if (JSON.parse(response.data).fingerprints[v].image.QualityFinger == "منخفضة") {
+                                                       
                                                         alert(" دقة البصمات قليلة للإبهام, يرجى اعادة التنصيم او قم ب الغاء الاصابع الجودتها قليلة ");
                                                         break;
                                                     }
@@ -773,8 +780,26 @@ export class HomePage extends Component {
                                                 this.setState({
                                                     FingerPrintExistThumb: true,
                                                 }, () => {
+                                                    debugger;
+                                                    this.state.afis_Thumbsarray = this.state.afis_Thumbsarray.concat(JSON.parse(response.data).fingerprints);
 
-                                                   this.state.afis_Thumbsarray = this.state.afis_Thumbsarray.concat(JSON.parse(response.data).fingerprints);
+                                                    if(this.state.afis_Thumbsarray.length > 0)
+                                                    {
+                                                        for(var T=0 ; T<this.state.afis_Thumbsarray.length ; T++)
+                                                        {
+                                                            var sizeInBytes = 4 * Math.ceil((this.state.afis_Thumbsarray[T].image.dataBytes.length / 3))*0.5624896334383812;
+                                                            if(sizeInBytes > 16000)
+                                                            {
+                                                                this.setState({
+                                                                    AFIS_FAFM_Thumbs: { position: "Thumbs", image: { dataBytes: "", format: "bmp" }, fingerprints: [], missingFingerprints: [], TypeId: 0 }
+                                                                })
+                                                                alert("يوجد اصابع من كلا الابهامين تحتوي على حجم كبير جدا , يرجى اعادة التبصيم مره اخرى");
+                                                                return;
+                                                            }
+                                                           
+                                                        }
+                                                    }
+
 
                                                     this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.fingerprints = this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.fingerprints.concat(JSON.parse(response.data).fingerprints);
                                                     this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.missingFingerprints = this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.missingFingerprints.concat(JSON.parse(response.data).missingFingerprints);
@@ -839,10 +864,16 @@ export class HomePage extends Component {
 
                                     this.Stop();
                                     if (response.data == "") {
+                                        this.setState({
+                                            AFIS_FAFM_Right: { position: "RightHand", image: { dataBytes: "", format: "bmp" }, fingerprints: [], missingFingerprints: [] },
+                                        })
                                         alert("حصل خطأ عند تقسيم اصابع اليد اليمنى");
                                     } else {
                                         if (response.data == "101") {
-                                            alert("البصمات المرفقة غير مطايقه مع البصمات المختارة لليد اليمنى يرجى اعادة الالتقاط");
+                                            this.setState({
+                                                AFIS_FAFM_Right: { position: "RightHand", image: { dataBytes: "", format: "bmp" }, fingerprints: [], missingFingerprints: [] },
+                                            })
+                                            alert("البصمات المرفقة غير مطابقه مع البصمات المختارة لليد اليمنى يرجى اعادة الالتقاط");
                                         } else if (response.data == "408") {
 
                                             this.setState({
@@ -859,6 +890,7 @@ export class HomePage extends Component {
                                             if (JSON.parse(response.data).fingerprints.length > 0) {
                                                 for (var v = 0; v < JSON.parse(response.data).fingerprints.length > 0; v++) {
                                                     if (JSON.parse(response.data).fingerprints[v].image.QualityFinger == "منخفضة") {
+                                                      
                                                         alert(" دقة البصمات قليلة  لليد اليمنى , يرجى اعادة التنصيم او قم ب الغاء الاصابع الجودتها قليلة ");
                                                         break;
                                                     }
@@ -874,6 +906,23 @@ export class HomePage extends Component {
                                                 }, () => {
                                                     
                                                     this.state.afis_rightarray = this.state.afis_rightarray.concat(JSON.parse(response.data).fingerprints);
+
+                                                    if(this.state.afis_rightarray.length > 0)
+                                                    {
+                                                        for(var R=0 ; R<this.state.afis_rightarray.length ; R++)
+                                                        {
+                                                            var sizeInBytes = 4 * Math.ceil((this.state.afis_rightarray[R].image.dataBytes.length / 3))*0.5624896334383812;
+                                                            if(sizeInBytes > 16000)
+                                                            {
+                                                                this.setState({
+                                                                    AFIS_FAFM_Right: { position: "RightHand", image: { dataBytes: "", format: "bmp" }, fingerprints: [], missingFingerprints: [] },
+                                                                })
+                                                                alert("يوجد اصابع من اليد اليمنى تحتوي على حجم كبير جدا , يرجى اعادة التبصيم مره اخرى");
+                                                                return;
+                                                            }
+                                                           
+                                                        }
+                                                    }
 
                                                     this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.fingerprints = this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.fingerprints.concat(JSON.parse(response.data).fingerprints);
                                                     this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.missingFingerprints = this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.missingFingerprints.concat(JSON.parse(response.data).missingFingerprints);
@@ -952,10 +1001,16 @@ export class HomePage extends Component {
 
                                     this.Stop();
                                     if (response.data == "") {
+                                        this.setState({
+                                            AFIS_FAFM_Left: { position: "LeftHand", image: { dataBytes: "", format: "bmp" }, fingerprints: [], missingFingerprints: [] },
+                                        })
                                         alert("حصل خطأ عند تقسيم اصابع اليد اليسرى");
                                     } else {
                                         if (response.data == "101") {
-                                            alert("البصمات المرفقة غير مطايقه مع البصمات المختارة لليد اليسرى يرجى اعادة الالتقاط");
+                                            this.setState({
+                                                AFIS_FAFM_Left: { position: "LeftHand", image: { dataBytes: "", format: "bmp" }, fingerprints: [], missingFingerprints: [] },
+                                            })
+                                            alert("البصمات المرفقة غير مطابقه مع البصمات المختارة لليد اليسرى يرجى اعادة الالتقاط");
                                         }
                                         else if (response.data == "408") {
 
@@ -973,6 +1028,7 @@ export class HomePage extends Component {
                                             if (JSON.parse(response.data).fingerprints.length > 0) {
                                                 for (var v = 0; v < JSON.parse(response.data).fingerprints.length > 0; v++) {
                                                     if (JSON.parse(response.data).fingerprints[v].image.QualityFinger == "منخفضة") {
+                                                       
                                                         alert(" دقة البصمات قليلة لليد اليسرى , يرجى اعادة التنصيم او قم ب الغاء الاصابع الجودتها قليلة ");
                                                         break;
                                                     }
@@ -989,6 +1045,24 @@ export class HomePage extends Component {
 
                                                     this.state.afis_Leftarray = this.state.afis_Leftarray.concat(JSON.parse(response.data).fingerprints);
 
+                                                    if(this.state.afis_Leftarray.length > 0)
+                                                    {
+                                                        for(var L=0 ; L<this.state.afis_Leftarray.length ; L++)
+                                                        {
+                                                            var sizeInBytes = 4 * Math.ceil((this.state.afis_Leftarray[L].image.dataBytes.length / 3))*0.5624896334383812;
+                                                            if(sizeInBytes > 16000)
+                                                            {
+                                                                this.setState({
+                                                                    AFIS_FAFM_Left: { position: "LeftHand", image: { dataBytes: "", format: "bmp" }, fingerprints: [], missingFingerprints: [] },
+                                                                })
+                                                                alert("يوجد اصابع من اليد اليسرى تحتوي على حجم كبير جدا , يرجى اعادة التبصيم مره اخرى");
+                                                                
+                                                                return;
+                                                            }
+                                                           
+                                                        }
+                                                    }
+                                                    
                                                     this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.fingerprints = this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.fingerprints.concat(JSON.parse(response.data).fingerprints);
                                                     this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.missingFingerprints = this.state.AFIS_FingerApllicationFingerModulty.fingerprintModality.missingFingerprints.concat(JSON.parse(response.data).missingFingerprints);
                                                     var ResponseImage = JSON.parse(response.data);
